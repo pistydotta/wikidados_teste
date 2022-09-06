@@ -3,22 +3,22 @@
     <b-card title="Editando usuario" class="w-50">
       <b-row class="d-flex align-items-center">
         <b-col md="4">
-          <label for="username">Nome de usuario: </label>
+          <label for="first_name">First Name: </label>
         </b-col>
         <b-col>
-          <b-input type="text" name="username" v-model="user.username" />
+          <b-input type="text" name="first_name" v-model="user.first_name" />
         </b-col>
       </b-row>
       <b-row class="d-flex align-items-center mt-2">
         <b-col md="4">
-          <label for="password">Senha: </label>
+          <label for="last_name">Last Name: </label>
         </b-col>
         <b-col>
           <b-input
-            type="password"
-            name="password"
+            type="text"
+            name="last_name"
             id=""
-            v-model="user.password"
+            v-model="user.last_name"
           />
         </b-col>
       </b-row>
@@ -31,7 +31,9 @@
         </b-col>
       </b-row>
       <div class="d-flex justify-content-end mt-2">
-        <b-button class="mr-2" variant="primary" @click="editar">Editar</b-button>
+        <b-button class="mr-2" variant="primary" @click="editar"
+          >Editar</b-button
+        >
         <b-button variant="primary" @click="deletar">Deletar</b-button>
       </div>
     </b-card>
@@ -43,39 +45,28 @@ export default {
   data() {
     return {
       user: {
-        username: "",
+        id: 0,
+        first_name: "",
         email: "",
-        password: "",
+        last_name: "",
       },
     };
   },
   async mounted() {
-    const response = await this.$store.dispatch(
-      "getUser",
-      this.$route.params.id
-    );
-    this.user = { ...response.user };
+    const user = await this.$store.dispatch("getUser", this.$route.params.id);
+    this.user = { ...user };
   },
   methods: {
     async editar() {
-      let workingUser = {
-        userId: this.$route.params.id,
-        user: this.user,
-      };
-      const response = await this.$store.dispatch("editUser", workingUser);
-      console.log(response);
-      if (response.statusCode == 201) {
-        this.$router.push({ name: "users" });
-      }
+      await this.$store.dispatch("editUser", this.user);
+      this.$router.push({ name: "users" });
     },
     async deletar() {
       const response = await this.$store.dispatch(
         "deleteUser",
         this.$route.params.id
       );
-      if (response.data.statusCode == 200) {
-        this.$router.push({ name: "users" });
-      }
+      this.$router.push({ name: "users" });
     },
   },
 };

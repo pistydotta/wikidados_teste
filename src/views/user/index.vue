@@ -8,13 +8,13 @@
           class="d-flex align-items-center mt-2"
         >
           <b-col>
-            <span class="lead">{{ user.username }}</span>
+            <span class="lead">{{ user.first_name }} {{user.last_name}}</span>
           </b-col>
           <b-col>
             <b-button
               variant="primary"
               style="margin-left: 10px"
-              @click="redirect(user._id)"
+              @click="redirect(user.id)"
               >Ver</b-button
             >
           </b-col>

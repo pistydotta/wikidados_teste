@@ -4,22 +4,22 @@
       <b-card title="Criando usuario" class="w-50">
         <b-row class="d-flex align-items-center">
           <b-col md="4">
-            <label for="username">Nome de usuario: </label>
+            <label for="username">First name: </label>
           </b-col>
           <b-col>
-            <b-input type="text" name="username" v-model="user.username" />
+            <b-input type="text" name="username" v-model="user.first_name" />
           </b-col>
         </b-row>
         <b-row class="d-flex align-items-center mt-2">
           <b-col md="4">
-            <label for="password">Senha: </label>
+            <label for="password">Last Name: </label>
           </b-col>
           <b-col>
             <b-input
-              type="password"
+              type="text"
               name="password"
               id=""
-              v-model="user.password"
+              v-model="user.last_name"
             />
           </b-col>
         </b-row>
@@ -44,8 +44,8 @@ export default {
   data() {
     return {
       user: {
-        username: "",
-        password: "",
+        first_name: "",
+        last_name: "",
         email: "",
       },
     };
@@ -53,11 +53,9 @@ export default {
   methods: {
     async criar() {
       const response = await this.$store.dispatch("createUser", this.user);
-      if (response.statusCode == 200) {
-        this.$router.push({
-          name: "users",
-        });
-      }
+      this.$router.push({
+        name: "users",
+      });
     },
   },
 };

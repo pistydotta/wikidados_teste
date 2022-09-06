@@ -11,53 +11,58 @@ export default new Vuex.Store({
   },
   actions: {
     getUsers: async function ({ commit }) {
-      console.log("CHAMANDO!!")
-      try {
-        const response = await axios().get('/users')
-        console.log(response)
-        commit('SET_USERS', response.data.users)
-      } catch (error) {
-        console.log(error)
+      console.log(this.state.users)
+      if (this.state.users.length == 0) {
+        try {
+          const response = await axios().get('/api/users?page=1')
+          console.log(response)
+          commit('SET_USERS', response.data.data)
+        } catch (error) {
+          console.log(error)
+        }
+      } else {
+        return
       }
     },
     getUser: async function ({ commit }, userId) {
-      try {
-        const response = await axios().get(`/users/${userId}`)
-        return response.data
-      } catch (error) {
-        return error
-      }
+      let user = this.state.users.find(o => {
+        return o.id == userId
+      })
+      return user
     },
     createUser: async function ({ commit }, user) {
-      try {
-        const response = await axios().post('/users', user)
-        return response.data
-      } catch (error) {
-        return error
-      }
+      const ids = this.state.users.map(o => {
+        return o.id
+      })
+      let largestId = Math.max(...ids)
+      user.id = largestId + 1
+      commit('ADD_USER', user)
     },
     editUser: async function ({ commit }, user) {
       console.log("User no edit:")
       console.log(user)
-      try {
-        const response = await axios().put(`/users/${user.userId}`, user.user)
-        return response.data
-      } catch (error) {
-        return error
-      }
+      let activeUsers = this.state.users.filter(o => {
+        return o.id != user.id
+      })
+      activeUsers.push(user)
+      activeUsers.sort((a, b) => {
+        return a.id - b.id
+      })
+      commit('SET_USERS', activeUsers)
     },
     deleteUser: async function ({ commit }, userId) {
-      try {
-        const response = await axios().delete(`/users/${userId}`)
-        return response
-      } catch (error) {
-        return error
-      }
+      let activeUsers = this.state.users.filter(o => {
+        return o.id != userId
+      })
+      commit('SET_USERS', activeUsers)
     }
   },
   mutations: {
     ["SET_USERS"]: (state, users) => {
       state.users = users
+    },
+    ["ADD_USER"]: (state, user) => {
+      state.users.push(user)
     }
   },
 
