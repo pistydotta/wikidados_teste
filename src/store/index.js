@@ -62,7 +62,7 @@ export default new Vuex.Store({
       state.users = users
     },
     ["ADD_USER"]: (state, user) => {
-      state.users.push(user)
+      state.users.push(user) 
     }
   },
 
